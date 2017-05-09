@@ -76,3 +76,22 @@ iptables -t nat -A PREROUTING -i venet0 -p udp --dport 9191 -j DNAT --to-destina
 python mujson_mgr.py -a -p 端口 -k 密码 -m 加密方式 -O 协议 -o 混淆
 ```
 加完记得在母机增加iptables端口转发相关的代码
+
+## uml 开启SSR多用户版
+1. 确保你能成功运行 uml, 把当前 uml 关掉
+2. cd uml 目录下, 修改run.sh 把 mem 的内存改大点
+3. 启动 uml , bash run.sh start
+3. 进入uml , 在 uml 里运行以下代码
+```
+apk update
+apk add libsodium
+apk add py2-pip
+pip install cymysql
+pip install --upgrade pip
+```
+OK , 接着修改 SSR 配置 , 运行
+回到母鸡 , 修改防火墙端口
+```
+iptables -t nat -A PREROUTING -i venet0 -p tcp --dport 10000:60000 -j DNAT --to-destination 10.0.0.2
+iptables -t nat -A PREROUTING -i venet0 -p udp --dport 10000:60000 -j DNAT --to-destination 10.0.0.2
+```
